@@ -1,4 +1,4 @@
-from ._version import  __version__
+from importlib.metadata import version
 import time
 import sys
 import re
@@ -1638,5 +1638,4 @@ def _remap_rgb_value_reverse(rgb_val, max_value):
         _remap_color_reverse(rgb_val[2], max_value)]
 
 def get_blinkstick_package_version():
-    return __version__
-
+    return version("blinkstick")

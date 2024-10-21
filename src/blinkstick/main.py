@@ -4,7 +4,6 @@ from optparse import OptionParser, IndentedHelpFormatter, OptionGroup
 from blinkstick import blinkstick
 import textwrap
 import sys
-import time
 import logging
 logging.basicConfig()
 
@@ -70,7 +69,8 @@ class IndentedHelpFormatterWithNL(IndentedHelpFormatter):
         return "".join(result)
 
     def format_usage(self, usage):
-        return "BlinkStick control script %s\n(c) Agile Innovative Ltd 2013-2014\n\n%s" % (blinkstick.get_blinkstick_package_version(), IndentedHelpFormatter.format_usage(self, usage))
+        return "BlinkStick control script %s\n(c) Agile Innovative Ltd 2013-2014\n\n%s" % (
+        blinkstick.get_blinkstick_package_version(), IndentedHelpFormatter.format_usage(self, usage))
 
 
 def print_info(stick):
