@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "BlinkStick"
+version = "0.1.0"  # Update this to match the version in _version.py
+description = "Python package to control BlinkStick USB devices."
+readme = "README.rst"
+license = { file = "LICENSE.txt" }
+authors = [
+    { name = "Arvydas Juskevicius", email = "arvydas@arvydas.co.uk" }
+]
+dependencies = [
+    "pywinusb;  platform_system == 'Windows'",
+    "pyusb>=1.0.0;  platform_system != 'Windows'"
+]
+
+
+
+[project.scripts]
+blinkstick = "blinkstick:main"
+
+[project.urls]
+homepage = "http://pypi.python.org/pypi/BlinkStick/"
+repository = "https://github.com/yourusername/yourproject"
+
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"blinkstick" = ["*.txt"]

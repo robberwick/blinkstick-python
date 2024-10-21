@@ -1,3 +1,4 @@
+from .main import main
 from ._version import __version__
 __author__ = 'Rob Berwick, Arvydas Juskevicius'
 __copyright__ = "Copyright 2013-2014, Agile Innovative Ltd"
