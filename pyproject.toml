@@ -16,6 +16,9 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[project.optional-dependencies]
+test = ["coverage", "pytest", "pytest-cov", "pytest-mock"]
+
 [project.scripts]
 blinkstick = "blinkstick:main"
 
