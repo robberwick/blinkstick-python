@@ -2,7 +2,7 @@ import sys
 import time
 from importlib.metadata import version
 
-from blinkstick.colors import HEX_COLOR_RE, name_to_hex
+from blinkstick.colors import name_to_hex, normalize_hex
 from blinkstick.constants import VENDOR_ID, PRODUCT_ID
 from blinkstick.exceptions import BlinkStickException
 
@@ -669,49 +669,8 @@ class BlinkStick(object):
         (0, 0, 128)
 
         """
-        hex_digits = self._normalize_hex(hex_value)
+        hex_digits = normalize_hex(hex_value)
         return tuple([int(s, 16) for s in (hex_digits[1:3], hex_digits[3:5], hex_digits[5:7])])
-
-    def _normalize_hex(self, hex_value):
-        """
-        Normalize a hexadecimal color value to the following form and
-        return the result::
-
-            #[a-f0-9]{6}
-
-        In other words, the following transformations are applied as
-        needed:
-
-        * If the value contains only three hexadecimal digits, it is expanded to six.
-
-        * The value is normalized to lower-case.
-
-        If the supplied value cannot be interpreted as a hexadecimal color
-        value, ``ValueError`` is raised.
-
-        Examples:
-
-        >>> _normalize_hex('#0099cc')
-        '#0099cc'
-        >>> _normalize_hex('#0099CC')
-        '#0099cc'
-        >>> _normalize_hex('#09c')
-        '#0099cc'
-        >>> _normalize_hex('#09C')
-        '#0099cc'
-        >>> _normalize_hex('0099cc')
-        Traceback (most recent call last):
-            ...
-        ValueError: '0099cc' is not a valid hexadecimal color value.
-
-        """
-        try:
-            hex_digits = HEX_COLOR_RE.match(hex_value).groups()[0]
-        except AttributeError:
-            raise ValueError("'%s' is not a valid hexadecimal color value." % hex_value)
-        if len(hex_digits) == 3:
-            hex_digits = ''.join([2 * s for s in hex_digits])
-        return '#%s' % hex_digits.lower()
 
     def _name_to_rgb(self, name):
         """
