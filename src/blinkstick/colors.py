@@ -221,3 +221,22 @@ def normalize_hex(hex_value: str) -> str:
     if len(hex_digits) == 3:
         hex_digits = ''.join([2 * s for s in hex_digits])
     return '#%s' % hex_digits.lower()
+
+
+def hex_to_rgb(hex_value: str) -> tuple[int, int, int]:
+    """
+    Convert a hexadecimal color value to a 3-tuple of integers
+    suitable for use in an ``rgb()`` triplet specifying that color.
+
+    The hexadecimal value will be normalized before being converted.
+
+    Examples:
+
+    >>> hex_to_rgb('#fff')
+    (255, 255, 255)
+    >>> hex_to_rgb('#000080')
+    (0, 0, 128)
+
+    """
+    hex_digits = normalize_hex(hex_value)
+    return int(hex_digits[1:3], 16), int(hex_digits[3:5], 16), int(hex_digits[5:7], 16)

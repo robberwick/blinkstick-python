@@ -2,7 +2,7 @@ import sys
 import time
 from importlib.metadata import version
 
-from blinkstick.colors import name_to_hex, normalize_hex
+from blinkstick.colors import name_to_hex, hex_to_rgb
 from blinkstick.constants import VENDOR_ID, PRODUCT_ID
 from blinkstick.exceptions import BlinkStickException
 
@@ -217,7 +217,7 @@ class BlinkStick(object):
                 else:
                     red, green, blue = self._name_to_rgb(name)
             elif hex:
-                red, green, blue = self._hex_to_rgb(hex)
+                red, green, blue = hex_to_rgb(hex)
         except ValueError:
             red = green = blue = 0
 
@@ -654,24 +654,6 @@ class BlinkStick(object):
         """
         return self.max_rgb_value
 
-    def _hex_to_rgb(self, hex_value):
-        """
-        Convert a hexadecimal color value to a 3-tuple of integers
-        suitable for use in an ``rgb()`` triplet specifying that color.
-
-        The hexadecimal value will be normalized before being converted.
-
-        Examples:
-
-        >>> _hex_to_rgb('#fff')
-        (255, 255, 255)
-        >>> _hex_to_rgb('#000080')
-        (0, 0, 128)
-
-        """
-        hex_digits = normalize_hex(hex_value)
-        return tuple([int(s, 16) for s in (hex_digits[1:3], hex_digits[3:5], hex_digits[5:7])])
-
     def _name_to_rgb(self, name):
         """
         Convert a color name to a 3-tuple of integers suitable for use in
@@ -691,7 +673,7 @@ class BlinkStick(object):
         (218, 165, 32)
 
         """
-        return self._hex_to_rgb(name_to_hex(name))
+        return hex_to_rgb(name_to_hex(name))
 
 class BlinkStickPro(object):
     """
