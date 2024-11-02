@@ -2,7 +2,7 @@ import sys
 import time
 from importlib.metadata import version
 
-from blinkstick.colors import hex_to_rgb, name_to_rgb
+from blinkstick.colors import hex_to_rgb, name_to_rgb, remap_color, remap_rgb_value, remap_rgb_value_reverse
 from blinkstick.constants import VENDOR_ID, PRODUCT_ID
 from blinkstick.exceptions import BlinkStickException
 
@@ -221,7 +221,7 @@ class BlinkStick(object):
         except ValueError:
             red = green = blue = 0
 
-        red, green, blue = _remap_rgb_value([red, green, blue], self.max_rgb_value)
+        red, green, blue = remap_rgb_value([red, green, blue], self.max_rgb_value)
 
         # TODO - do smarts to determine input type from red var in case it is not int
 
@@ -567,9 +567,9 @@ class BlinkStick(object):
 
         r_end, g_end, b_end = self._determine_rgb(red=red, green=green, blue=blue, name=name, hex=hex)
         # descale the above values
-        r_end, g_end, b_end = _remap_rgb_value_reverse([r_end, g_end, b_end], self.max_rgb_value)
+        r_end, g_end, b_end = remap_rgb_value_reverse([r_end, g_end, b_end], self.max_rgb_value)
 
-        r_start, g_start, b_start = _remap_rgb_value_reverse(self._get_color_rgb(index), self.max_rgb_value)
+        r_start, g_start, b_start = remap_rgb_value_reverse(self._get_color_rgb(index), self.max_rgb_value)
 
         if r_start > 255 or g_start > 255 or b_start > 255:
             r_start = 0
@@ -727,7 +727,7 @@ class BlinkStickPro(object):
         """
 
         if remap_values:
-            r, g, b = [_remap_color(val, self.max_rgb_value) for val in [r, g, b]]
+            r, g, b = [remap_color(val, self.max_rgb_value) for val in [r, g, b]]
 
         self.data[channel][index] = [g, r, b]
 
@@ -899,7 +899,7 @@ class BlinkStickProMatrix(BlinkStickPro):
         """
 
         if remap_values:
-            r, g, b = [_remap_color(val, self.max_rgb_value) for val in [r, g, b]]
+            r, g, b = [remap_color(val, self.max_rgb_value) for val in [r, g, b]]
 
         self.matrix_data[self._coord_to_index(x, y)] = [g, r, b]
 
@@ -1281,33 +1281,6 @@ def find_by_serial(serial=None):
     if devices:
         return BlinkStick(device=devices[0])
 
-
-def _remap(value, leftMin, leftMax, rightMin, rightMax):
-    # Figure out how 'wide' each range is
-    leftSpan = leftMax - leftMin
-    rightSpan = rightMax - rightMin
-
-    # Convert the left range into a 0-1 range (float)
-    valueScaled = float(value - leftMin) / float(leftSpan)
-
-    # Convert the 0-1 range into a value in the right range.
-    return int(rightMin + (valueScaled * rightSpan))
-
-def _remap_color(value, max_value):
-    return _remap(value, 0, 255, 0, max_value)
-
-def _remap_color_reverse(value, max_value):
-    return _remap(value, 0, max_value, 0, 255)
-
-def _remap_rgb_value(rgb_val, max_value):
-    return [_remap_color(rgb_val[0], max_value),
-        _remap_color(rgb_val[1], max_value),
-        _remap_color(rgb_val[2], max_value)]
-
-def _remap_rgb_value_reverse(rgb_val, max_value):
-    return [_remap_color_reverse(rgb_val[0], max_value),
-        _remap_color_reverse(rgb_val[1], max_value),
-        _remap_color_reverse(rgb_val[2], max_value)]
 
 def get_blinkstick_package_version():
     return version("blinkstick")

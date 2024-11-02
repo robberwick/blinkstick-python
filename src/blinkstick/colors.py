@@ -262,3 +262,40 @@ def name_to_rgb(name: str) -> tuple[int, int, int]:
 
     """
     return hex_to_rgb(name_to_hex(name))
+
+
+def remap(value: int, left_min: int, left_max: int, right_min: int, right_max: int) -> int:
+    """
+    Remap a value from one range to another.
+    """
+    # TODO: decide if we should raise an exception if the value is outside the left range
+    # Figure out how 'wide' each range is
+    left_span = left_max - left_min
+    right_span = right_max - right_min
+
+    # Convert the left range into a 0-1 range (float)
+    value_scaled = float(value - left_min) / float(left_span)
+
+    # TODO: decide if we should use round() here, as int() will always round down
+    # Convert the 0-1 range into a value in the right range.
+    return int(right_min + (value_scaled * right_span))
+
+
+def remap_color(value: int, max_value: int) -> int:
+    return remap(value, 0, 255, 0, max_value)
+
+
+def remap_color_reverse(value: int, max_value : int) -> int:
+    return remap(value, 0, max_value, 0, 255)
+
+
+def remap_rgb_value(rgb_val: tuple[int, int, int], max_value: int) -> tuple[int, int, int]:
+    return (remap_color(rgb_val[0], max_value),
+            remap_color(rgb_val[1], max_value),
+            remap_color(rgb_val[2], max_value))
+
+
+def remap_rgb_value_reverse(rgb_val: tuple[int, int, int], max_value: int) -> tuple[int, int, int]:
+    return (remap_color_reverse(rgb_val[0], max_value),
+            remap_color_reverse(rgb_val[1], max_value),
+            remap_color_reverse(rgb_val[2], max_value))
