@@ -1,9 +1,8 @@
-import re
 import sys
 import time
 from importlib.metadata import version
 
-from blinkstick.colors import Color, HEX_COLOR_RE
+from blinkstick.colors import HEX_COLOR_RE, name_to_hex
 from blinkstick.constants import VENDOR_ID, PRODUCT_ID
 from blinkstick.exceptions import BlinkStickException
 
@@ -655,25 +654,6 @@ class BlinkStick(object):
         """
         return self.max_rgb_value
 
-    def _name_to_hex(self, name):
-        """
-        Convert a color name to a normalized hexadecimal color value.
-
-        The color name will be normalized to lower-case before being
-        looked up, and when no color of that name exists in the given
-        specification, ``ValueError`` is raised.
-
-        Examples:
-
-        >>> _name_to_hex('white')
-        '#ffffff'
-        >>> _name_to_hex('navy')
-        '#000080'
-        >>> _name_to_hex('goldenrod')
-        '#daa520'
-        """
-        return Color.from_name(name)
-
     def _hex_to_rgb(self, hex_value):
         """
         Convert a hexadecimal color value to a 3-tuple of integers
@@ -752,7 +732,7 @@ class BlinkStick(object):
         (218, 165, 32)
 
         """
-        return self._hex_to_rgb(self._name_to_hex(name))
+        return self._hex_to_rgb(name_to_hex(name))
 
 class BlinkStickPro(object):
     """

@@ -159,3 +159,23 @@ class Color(Enum):
             return cls[name.upper()]
         except KeyError:
             raise ValueError(f"'{name}' is not defined as a named color.")
+
+
+def name_to_hex(name: str) -> str:
+    """
+    Convert a color name to a normalized hexadecimal color value.
+
+    The color name will be normalized to lower-case before being
+    looked up, and when no color of that name exists in the given
+    specification, ``ValueError`` is raised.
+
+    Examples:
+
+    >>> name_to_hex('white')
+    '#ffffff'
+    >>> name_to_hex('navy')
+    '#000080'
+    >>> name_to_hex('goldenrod')
+    '#daa520'
+    """
+    return Color.from_name(name).value
