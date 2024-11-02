@@ -240,3 +240,25 @@ def hex_to_rgb(hex_value: str) -> tuple[int, int, int]:
     """
     hex_digits = normalize_hex(hex_value)
     return int(hex_digits[1:3], 16), int(hex_digits[3:5], 16), int(hex_digits[5:7], 16)
+
+
+def name_to_rgb(name: str) -> tuple[int, int, int]:
+    """
+    Convert a color name to a 3-tuple of integers suitable for use in
+    an ``rgb()`` triplet specifying that color.
+
+    The color name will be normalized to lower-case before being
+    looked up, and when no color of that name exists in the given
+    specification, ``ValueError`` is raised.
+
+    Examples:
+
+    >>> name_to_rgb('white')
+    (255, 255, 255)
+    >>> name_to_rgb('navy')
+    (0, 0, 128)
+    >>> name_to_rgb('goldenrod')
+    (218, 165, 32)
+
+    """
+    return hex_to_rgb(name_to_hex(name))

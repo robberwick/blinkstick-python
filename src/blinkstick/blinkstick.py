@@ -2,7 +2,7 @@ import sys
 import time
 from importlib.metadata import version
 
-from blinkstick.colors import name_to_hex, hex_to_rgb
+from blinkstick.colors import hex_to_rgb, name_to_rgb
 from blinkstick.constants import VENDOR_ID, PRODUCT_ID
 from blinkstick.exceptions import BlinkStickException
 
@@ -215,7 +215,7 @@ class BlinkStick(object):
                     green = randint(0, 255)
                     blue = randint(0, 255)
                 else:
-                    red, green, blue = self._name_to_rgb(name)
+                    red, green, blue = name_to_rgb(name)
             elif hex:
                 red, green, blue = hex_to_rgb(hex)
         except ValueError:
@@ -654,26 +654,6 @@ class BlinkStick(object):
         """
         return self.max_rgb_value
 
-    def _name_to_rgb(self, name):
-        """
-        Convert a color name to a 3-tuple of integers suitable for use in
-        an ``rgb()`` triplet specifying that color.
-
-        The color name will be normalized to lower-case before being
-        looked up, and when no color of that name exists in the given
-        specification, ``ValueError`` is raised.
-
-        Examples:
-
-        >>> _name_to_rgb('white')
-        (255, 255, 255)
-        >>> _name_to_rgb('navy')
-        (0, 0, 128)
-        >>> _name_to_rgb('goldenrod')
-        (218, 165, 32)
-
-        """
-        return hex_to_rgb(name_to_hex(name))
 
 class BlinkStickPro(object):
     """
