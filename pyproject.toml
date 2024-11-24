@@ -19,6 +19,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 dev = ["black", "isort", "mypy"]
 test = ["coverage", "pytest", "pytest-cov", "pytest-mock"]
+docs = ["sphinx", "sphinx-rtd-theme", "sphinx-autobuild", "sphinx-autodoc-typehints", "enum-tools[sphinx]", "setuptools_scm"]
 
 [project.scripts]
 blinkstick = "blinkstick.main:main"
