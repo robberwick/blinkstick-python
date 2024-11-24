@@ -17,7 +17,7 @@ dependencies = [
 dynamic = ["version"]
 
 [project.optional-dependencies]
-dev = ["black", "isort", "mypy"]
+dev = ["black", "isort", "mypy", "setuptools_scm"]
 test = ["coverage", "pytest", "pytest-cov", "pytest-mock"]
 docs = ["sphinx", "sphinx-rtd-theme", "sphinx-autobuild", "sphinx-autodoc-typehints", "enum-tools[sphinx]", "setuptools_scm"]
 
