@@ -162,8 +162,7 @@ class Color(Enum):
 
 
 def name_to_hex(name: str) -> str:
-    """
-    Convert a color name to a normalized hexadecimal color value.
+    """Convert a color name to a normalized hexadecimal color value.
 
     The color name will be normalized to lower-case before being
     looked up, and when no color of that name exists in the given
@@ -194,8 +193,7 @@ class ColorFormat(Enum):
 
 
 def normalize_hex(hex_value: str) -> str:
-    """
-    Normalize a hexadecimal color value to the following form and
+    """Normalize a hexadecimal color value to the following form and
     return the result::
 
         #[a-f0-9]{6}
@@ -239,8 +237,7 @@ def normalize_hex(hex_value: str) -> str:
 
 
 def hex_to_rgb(hex_value: str) -> tuple[int, int, int]:
-    """
-    Convert a hexadecimal color value to a 3-tuple of integers
+    """Convert a hexadecimal color value to a 3-tuple of integers
     suitable for use in an ``rgb()`` triplet specifying that color.
 
     The hexadecimal value will be normalized before being converted.
@@ -258,8 +255,7 @@ def hex_to_rgb(hex_value: str) -> tuple[int, int, int]:
 
 
 def name_to_rgb(name: str) -> tuple[int, int, int]:
-    """
-    Convert a color name to a 3-tuple of integers suitable for use in
+    """Convert a color name to a 3-tuple of integers suitable for use in
     an ``rgb()`` triplet specifying that color.
 
     The color name will be normalized to lower-case before being
@@ -282,9 +278,7 @@ def name_to_rgb(name: str) -> tuple[int, int, int]:
 def remap(
     value: int, left_min: int, left_max: int, right_min: int, right_max: int
 ) -> int:
-    """
-    Remap a value from one range to another.
-    """
+    """Remap a value from one range to another."""
     # TODO: decide if we should raise an exception if the value is outside the left range
     # Figure out how 'wide' each range is
     left_span = left_max - left_min

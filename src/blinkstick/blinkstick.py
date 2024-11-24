@@ -36,12 +36,12 @@ Main module to control BlinkStick and BlinkStick Pro devices.
 class BlinkStick:
     """
     BlinkStick class is designed to control regular BlinkStick devices, or BlinkStick Pro
-    devices in Normal or Inverse modes. Please refer to L{BlinkStick.set_mode} for more details
+    devices in Normal or Inverse modes. Please refer to :meth:`BlinkStick.set_mode` for more details
     about BlinkStick Pro backend modes.
 
     Code examples on how you can use this class are available here:
 
-    U{https://github.com/arvydas/blinkstick-python/wiki}
+    https://github.com/arvydas/blinkstick-python/wiki
     """
 
     inverse: bool
@@ -52,11 +52,11 @@ class BlinkStick:
     bs_serial: str
 
     def __init__(self, device=None, error_reporting: bool = True):
-        """
-        Constructor for the class.
+        """Constructor for the class.
 
-        @type  error_reporting: Boolean
-        @param error_reporting: display errors if they occur during communication with the backend
+        :param error_reporting: display errors if they occur during
+            communication with the backend
+        :type error_reporting: Boolean
         """
         self.error_reporting = error_reporting
         self.max_rgb_value = 255
@@ -67,37 +67,36 @@ class BlinkStick:
             self.bs_serial = self.get_serial()
 
     def get_serial(self) -> str:
-        """
-        Returns the serial number of backend.::
+        """Returns the serial number of the BlinkStick device.
 
-            BSnnnnnn-1.0
-            ||  |    | |- Software minor version
-            ||  |    |--- Software major version
-            ||  |-------- Denotes sequential number
-            ||----------- Denotes BlinkStick backend
+        ::
+
+           BSnnnnnn-1.0
+           ||  |    | |- Software minor version
+           ||  |    |--- Software major version
+           ||  |-------- Denotes sequential number
+           ||----------- Denotes BlinkStick backend
 
         Software version defines the capabilities of the backend
 
-        @rtype: str
-        @return: Serial number of the backend
+        :returns: Blinkstick device serial number
+        :rtype: str
         """
         return self.backend.get_serial()
 
     def get_manufacturer(self) -> str:
-        """
-        Get the manufacturer of the backend
+        """Get the device manufacturer's name.
 
-        @rtype: str
-        @return: Device manufacturer's name
+        :returns: Device manufacturer's name
+        :rtype: str
         """
         return self.backend.get_manufacturer()
 
     def get_variant(self) -> BlinkStickVariant:
-        """
-        Get the product variant of the backend.
+        """Get the product variant of the backend.
 
-        @rtype: int
-        @return: BlinkStickVariant.UNKNOWN, BlinkStickVariant.BLINKSTICK, BlinkStickVariant.BLINKSTICK_PRO and etc
+        :returns: An enum representing the variant of BlinkStick device
+        :rtype: BlinkStickVariant
         """
 
         serial = self.get_serial()
@@ -108,29 +107,27 @@ class BlinkStick:
         return BlinkStickVariant.identify(int(major), version_attribute)
 
     def get_variant_string(self) -> str:
-        """
-        Get the product variant of the backend as string.
+        """Get the product variant of the backend as string.
 
-        @rtype: string
-        @return: "BlinkStick", "BlinkStick Pro", etc
+        :returns: String representation of the BlinkStickVariant enum e.g. "BlinkStick", "BlinkStick Pro", etc
+        :rtype: string
         """
         return self.get_variant().description
 
     def get_description(self) -> str:
-        """
-        Get the description of the backend
+        """Get the device description.
 
-        @rtype: str
-        @return: Device description
+        :returns: Device description
+        :rtype: str
         """
         return self.backend.get_description()
 
     def set_error_reporting(self, error_reporting: bool) -> None:
-        """
-        Enable or disable error reporting
+        """Enable or disable error reporting
 
-        @type  error_reporting: Boolean
-        @param error_reporting: display errors if they occur during communication with the backend
+        :param error_reporting: display errors if they occur during
+            communication with the backend
+        :type error_reporting: Boolean
         """
         self.error_reporting = error_reporting
 
@@ -144,23 +141,27 @@ class BlinkStick:
         name: str | None = None,
         hex: str | None = None,
     ) -> None:
-        """
-        Set the color to the backend as RGB
+        """Set the color to the backend as RGB
 
-        @type  channel: int
-        @param channel: the channel which to send data to (R=0, G=1, B=2)
-        @type  index: int
-        @param index: the index of the LED
-        @type  red: int
-        @param red: Red color intensity 0 is off, 255 is full red intensity
-        @type  green: int
-        @param green: Green color intensity 0 is off, 255 is full green intensity
-        @type  blue: int
-        @param blue: Blue color intensity 0 is off, 255 is full blue intensity
-        @type  name: str
-        @param name: Use CSS color name as defined here: U{http://www.w3.org/TR/css3-color/}
-        @type  hex: str
-        @param hex: Specify color using hexadecimal color value e.g. '#FF3366'
+        :param channel: the channel which to send data to (R=0, G=1,
+            B=2)
+        :type channel: int
+        :param index: the index of the LED
+        :type index: int
+        :param red: Red color intensity 0 is off, 255 is full red
+            intensity
+        :type red: int
+        :param green: Green color intensity 0 is off, 255 is full green
+            intensity
+        :type green: int
+        :param blue: Blue color intensity 0 is off, 255 is full blue
+            intensity
+        :type blue: int
+        :param name: Use CSS color name as defined here: http://www.w3.org/TR/css3-color/
+        :type name: str | None
+        :param hex: Specify color using hexadecimal color value e.g.
+            '#FF3366'
+        :type hex: str | None
         """
 
         red, green, blue = self._determine_rgb(
@@ -246,30 +247,34 @@ class BlinkStick:
         color_mode: ColorFormat = ColorFormat.RGB,
         color_format: str | None = None,
     ) -> tuple[int, int, int] | str:
-        """
-        Get the current backend color in the defined format.
+        """Get the current backend color in the defined format.
 
         Currently supported formats:
 
             1. rgb (default) - Returns values as 3-tuple (r,g,b)
             2. hex - returns current backend color as hexadecimal string
 
-            >>> b = blinkstick.find_first()
-            >>> b.set_color(red=255,green=0,blue=0)
-            >>> (r,g,b) = b.get_color() # Get color as rbg tuple
-            (255,0,0)
-            >>> hex = b.get_color(color_mode=ColorFormat.HEX) # Get color as hex string
-            '#ff0000'
+        .. code-block:: python
 
-        @type  index: int
-        @param index: the index of the LED
-        @type  color_mode: ColorFormat
-        @param color_mode: the format to return the color in (ColorFormat.RGB or ColorFormat.HEX) - defaults to ColorFormat.RGB
-        @type  color_format: str
-        @param color_format: "rgb" or "hex". Defaults to "rgb". Deprecated, use color_mode instead.
+           >>> b = blinkstick.find_first()
+           >>> b.set_color(red=255,green=0,blue=0)
+           >>> (r,g,b) = b.get_color() # Get color as rbg tuple
+           (255,0,0)
+           >>> hex = b.get_color(color_mode=ColorFormat.HEX) # Get color as hex string
+           '#ff0000'
 
-        @rtype: (int, int, int) or str
-        @return: Either 3-tuple for R, G and B values, or hex string
+        :param index: the index of the LED
+        :type index: int
+        :param color_mode: the format to return the color in
+            (ColorFormat.RGB or ColorFormat.HEX) - defaults to
+            ColorFormat.RGB
+        :type color_mode: ColorFormat
+        :param color_format: "rgb" or "hex". Defaults to "rgb".
+            Deprecated, use color_mode instead.
+        :type color_format: str
+
+        :returns: Either 3-tuple for R, G and B values, or hex string
+        :rtype: (int, int, int) or str
         """
         # color_format is deprecated, and color_mode should be used instead
         # if color_format is specified, then raise a DeprecationWarning, but attempt to convert it to a ColorFormat enum
@@ -311,13 +316,13 @@ class BlinkStick:
         return report_id, max_leds
 
     def set_led_data(self, channel: int, data: list[int]) -> None:
-        """
-        Send LED data frame.
+        """Send LED data frame.
 
-        @type  channel: int
-        @param channel: the channel which to send data to (R=0, G=1, B=2)
-        @type  data: int[0..64*3]
-        @param data: The LED data frame in GRB color_mode
+        :param channel: the channel which to send data to (R=0, G=1,
+            B=2)
+        :type channel: int
+        :param data: The LED data frame in GRB color_mode
+        :type data: list[int]
         """
 
         report_id, max_leds = self._determine_report_id(len(data))
@@ -333,13 +338,13 @@ class BlinkStick:
         self.backend.control_transfer(0x20, 0x9, report_id, 0, bytes(bytearray(report)))
 
     def get_led_data(self, count: int) -> list[int]:
-        """
-        Get LED data frame on the backend.
+        """Get LED data frame from the device.
 
-        @type  count: int
-        @param count: How much data to retrieve. Can be in the range of 0..64*3
-        @rtype: int[0..64*3]
-        @return: LED data currently stored in the RAM of the backend
+        :param count: How much data to retrieve. Can be in the range of
+            0..64*3
+        :type count: int
+        :returns: LED data currently stored in the RAM of the device
+        :rtype: list[int]
         """
 
         report_id, max_leds = self._determine_report_id(count)
@@ -351,8 +356,7 @@ class BlinkStick:
         return device_bytes[2 : 2 + count * 3]
 
     def set_mode(self, mode: int) -> None:
-        """
-        Set backend mode for BlinkStick Pro. Device currently supports the following modes:
+        """Set backend mode for BlinkStick Pro. Device currently supports the following modes:
 
             - 0 - (default) use R, G and B channels to control single RGB LED
             - 1 - same as 0, but inverse mode
@@ -360,18 +364,17 @@ class BlinkStick:
 
         You can find out more about BlinkStick Pro modes:
 
-        U{http://www.blinkstick.com/help/tutorials/blinkstick-pro-modes}
+        http://www.blinkstick.com/help/tutorials/blinkstick-pro-modes
 
-        @type  mode: int
-        @param mode: Device mode to set
+        :param mode: Device mode to set
+        :type mode: int
         """
         control_string = bytes(bytearray([4, mode]))
 
         self.backend.control_transfer(0x20, 0x9, 0x0004, 0, control_string)
 
     def get_mode(self) -> int:
-        """
-        Get BlinkStick Pro mode. Device currently supports the following modes:
+        """Get BlinkStick Pro mode. Device currently supports the following modes:
 
             - 0 - (default) use R, G and B channels to control single RGB LED
             - 1 - same as 0, but inverse mode
@@ -379,10 +382,10 @@ class BlinkStick:
 
         You can find out more about BlinkStick Pro modes:
 
-        U{http://www.blinkstick.com/help/tutorials/blinkstick-pro-modes}
+        http://www.blinkstick.com/help/tutorials/blinkstick-pro-modes
 
-        @rtype: int
-        @return: Device mode
+        :returns: Integer representing the current mode. -1 if not supported.
+        :rtype: int
         """
 
         device_bytes = self.backend.control_transfer(0x80 | 0x20, 0x1, 0x0004, 0, 2)
@@ -393,22 +396,20 @@ class BlinkStick:
             return -1
 
     def set_led_count(self, count: int) -> None:
-        """
-        Set number of LEDs for supported devices
+        """Set number of LEDs for supported devices
 
-        @type  count: int
-        @param count: number of LEDs to control
+        :param count: number of LEDs to control
+        :type count: int
         """
         control_string = bytes(bytearray([0x81, count]))
 
         self.backend.control_transfer(0x20, 0x9, 0x81, 0, control_string)
 
     def get_led_count(self) -> int:
-        """
-        Get number of LEDs for supported devices
+        """Get number of LEDs for supported devices
 
-        @rtype: int
-        @return: Number of LEDs
+        :returns: Number of LEDs
+        :rtype: int
         """
 
         device_bytes = self.backend.control_transfer(0x80 | 0x20, 0x1, 0x81, 0, 2)
@@ -419,15 +420,14 @@ class BlinkStick:
             return -1
 
     def get_info_block1(self) -> str:
-        """
-        Get the infoblock1 of the backend.
+        """Get the contents of infoblock1 from the device.
 
-        This is a 32 byte array that can contain any data. It's supposed to
-        hold the "Name" of the backend making it easier to identify rather than
+        This is a 32 byte array that can contain any data. It's commonly used to
+        hold the "Name" of the device making it easier to identify rather than
         a serial number.
 
-        @rtype: str
-        @return: InfoBlock1 currently stored on the backend
+        :returns: InfoBlock1 currently stored on the device
+        :rtype: str
         """
 
         device_bytes = self.backend.control_transfer(0x80 | 0x20, 0x1, 0x0002, 0, 33)
@@ -439,13 +439,12 @@ class BlinkStick:
         return result
 
     def get_info_block2(self) -> str:
-        """
-        Get the infoblock2 of the backend.
+        """Get the contents of infoblock2 from the device.
 
         This is a 32 byte array that can contain any data.
 
-        @rtype: str
-        @return: InfoBlock2 currently stored on the backend
+        :returns: InfoBlock2 ntly stored on the device
+        :rtype: str
         """
         device_bytes = self.backend.control_transfer(0x80 | 0x20, 0x1, 0x0003, 0, 33)
         result = ""
@@ -456,41 +455,37 @@ class BlinkStick:
         return result
 
     def set_info_block1(self, data: str) -> None:
-        """
-        Sets the infoblock1 with specified string.
+        """Sets the infoblock1 with specified string.
 
-        It fills the rest of 32 bytes with zeros.
+        The content of infoblock1 will be set to the specified string. The rest of the 32 bytes will be filled with zeros.
+        If the string is longer than 32 bytes, it will be truncated.
 
-        @type  data: str
-        @param data: InfoBlock1 for the backend to set
+        :param data: Content to set in infoblock1
+        :type data: str
         """
         self.backend.control_transfer(
             0x20, 0x9, 0x0002, 0, string_to_info_block_data(data)
         )
 
     def set_info_block2(self, data: str) -> None:
-        """
-        Sets the infoblock2 with specified string.
+        """Sets the infoblock2 with specified string.
 
-        It fills the rest of 32 bytes with zeros.
+        The content of infoblock1 will be set to the specified string. The rest of the 32 bytes will be filled with zeros.
+        If the string is longer than 32 bytes, it will be truncated.
 
-        @type  data: str
-        @param data: InfoBlock2 for the backend to set
+        :param data: Content to set in infoblock2
+        :type data: str
         """
         self.backend.control_transfer(
             0x20, 0x9, 0x0003, 0, string_to_info_block_data(data)
         )
 
     def set_random_color(self) -> None:
-        """
-        Sets random color to the backend.
-        """
+        """Sets the color of the device to a random value."""
         self.set_color(name="random")
 
     def turn_off(self) -> None:
-        """
-        Turns off LED.
-        """
+        """Turns off the device LED. This is equivalent to setting the color to black."""
         self.set_color()
 
     def pulse(
@@ -506,29 +501,33 @@ class BlinkStick:
         duration: int = 1000,
         steps: int = 50,
     ) -> None:
-        """
-        Morph to the specified color from black and back again.
+        """Morph to the specified color from black and back again.
 
-        @type  channel: int
-        @param channel: the channel which to send data to (R=0, G=1, B=2)
-        @type  index: int
-        @param index: the index of the LED
-        @type  red: int
-        @param red: Red color intensity 0 is off, 255 is full red intensity
-        @type  green: int
-        @param green: Green color intensity 0 is off, 255 is full green intensity
-        @type  blue: int
-        @param blue: Blue color intensity 0 is off, 255 is full blue intensity
-        @type  name: str
-        @param name: Use CSS color name as defined here: U{http://www.w3.org/TR/css3-color/}
-        @type  hex: str
-        @param hex: Specify color using hexadecimal color value e.g. '#FF3366'
-        @type  repeats: int
-        @param repeats: Number of times to pulse the LED
-        @type  duration: int
-        @param duration: Duration for pulse in milliseconds
-        @type  steps: int
-        @param steps: Number of gradient steps
+        :param channel: the channel which to send data to (R=0, G=1,
+            B=2)
+        :type channel: int
+        :param index: the index of the LED
+        :type index: int
+        :param red: Red color intensity 0 is off, 255 is full red
+            intensity
+        :type red: int
+        :param green: Green color intensity 0 is off, 255 is full green
+            intensity
+        :type green: int
+        :param blue: Blue color intensity 0 is off, 255 is full blue
+            intensity
+        :type blue: int
+        :param name: Use CSS color name as defined here: http://www.w3.org/TR/css3-color/
+        :type name: str
+        :param hex: Specify color using hexadecimal color value e.g.
+            '#FF3366'
+        :type hex: str
+        :param repeats: Number of times to pulse the LED
+        :type repeats: int
+        :param duration: Duration for pulse in milliseconds
+        :type duration: int
+        :param steps: Number of gradient steps
+        :type steps: int
         """
         self.turn_off()
         for x in range(repeats):
@@ -565,27 +564,33 @@ class BlinkStick:
         repeats: int = 1,
         delay: int = 500,
     ) -> None:
-        """
-        Blink the specified color.
+        """Blink the specified color.
 
-        @type  channel: int
-        @param channel: the channel which to send data to (R=0, G=1, B=2)
-        @type  index: int
-        @param index: the index of the LED
-        @type  red: int
-        @param red: Red color intensity 0 is off, 255 is full red intensity
-        @type  green: int
-        @param green: Green color intensity 0 is off, 255 is full green intensity
-        @type  blue: int
-        @param blue: Blue color intensity 0 is off, 255 is full blue intensity
-        @type  name: str
-        @param name: Use CSS color name as defined here: U{http://www.w3.org/TR/css3-color/}
-        @type  hex: str
-        @param hex: Specify color using hexadecimal color value e.g. '#FF3366'
-        @type  repeats: int
-        @param repeats: Number of times to pulse the LED
-        @type  delay: int
-        @param delay: time in milliseconds to light LED for, and also between blinks
+        :param channel: the channel which to send data to (R=0, G=1,
+            B=2)
+        :type channel: int
+        :param index: the index of the LED
+        :type index: int
+        :param red: Red color intensity 0 is off, 255 is full red
+            intensity
+        :type red: int
+        :param green: Green color intensity 0 is off, 255 is full green
+            intensity
+        :type green: int
+        :param blue: Blue color intensity 0 is off, 255 is full blue
+            intensity
+        :type blue: int
+        :param name: Use CSS color name as defined here:
+            U{http://www.w3.org/TR/css3-color/}
+        :type name: str
+        :param hex: Specify color using hexadecimal color value e.g.
+            '#FF3366'
+        :type hex: str
+        :param repeats: Number of times to pulse the LED
+        :type repeats: int
+        :param delay: time in milliseconds to light LED for, and also
+            between blinks
+        :type delay: int
         """
         ms_delay = float(delay) / float(1000)
         for x in range(repeats):
@@ -615,27 +620,32 @@ class BlinkStick:
         duration: int = 1000,
         steps: int = 50,
     ) -> None:
-        """
-        Morph to the specified color.
+        """Morph to the specified color.
 
-        @type  channel: int
-        @param channel: the channel which to send data to (R=0, G=1, B=2)
-        @type  index: int
-        @param index: the index of the LED
-        @type  red: int
-        @param red: Red color intensity 0 is off, 255 is full red intensity
-        @type  green: int
-        @param green: Green color intensity 0 is off, 255 is full green intensity
-        @type  blue: int
-        @param blue: Blue color intensity 0 is off, 255 is full blue intensity
-        @type  name: str
-        @param name: Use CSS color name as defined here: U{http://www.w3.org/TR/css3-color/}
-        @type  hex: str
-        @param hex: Specify color using hexadecimal color value e.g. '#FF3366'
-        @type  duration: int
-        @param duration: Duration for morph in milliseconds
-        @type  steps: int
-        @param steps: Number of gradient steps (default 50)
+        :param channel: the channel which to send data to (R=0, G=1,
+            B=2)
+        :type channel: int
+        :param index: the index of the LED
+        :type index: int
+        :param red: Red color intensity 0 is off, 255 is full red
+            intensity
+        :type red: int
+        :param green: Green color intensity 0 is off, 255 is full green
+            intensity
+        :type green: int
+        :param blue: Blue color intensity 0 is off, 255 is full blue
+            intensity
+        :type blue: int
+        :param name: Use CSS color name as defined here:
+            U{http://www.w3.org/TR/css3-color/}
+        :type name: str
+        :param hex: Specify color using hexadecimal color value e.g.
+            '#FF3366'
+        :type hex: str
+        :param duration: Duration for morph in milliseconds
+        :type duration: int
+        :param steps: Number of gradient steps (default 50)
+        :type steps: int
         """
 
         r_end, g_end, b_end = self._determine_rgb(
@@ -684,7 +694,7 @@ class BlinkStick:
 
     def open_device(self, d):
         """Open backend.
-        @param d: Device to open
+        :param d: Device to open
         """
         if self.backend is None:
             raise BlinkStickException("Could not find BlinkStick...")
@@ -698,61 +708,56 @@ class BlinkStick:
         return True
 
     def get_inverse(self) -> bool:
-        """
-        Get the value of inverse mode. This applies only to BlinkStick. Please use L{set_mode} for BlinkStick Pro
+        """Get the value of inverse mode. This applies only to BlinkStick. Please use :meth:`set_mode` for BlinkStick Pro
         to permanently set the inverse mode to the backend.
 
-        @rtype: bool
-        @return: True if inverse mode, otherwise false
+        :returns: True if inverse mode, otherwise false
+        :rtype: bool
         """
         return self.inverse
 
     def set_inverse(self, value: bool) -> None:
-        """
-        Set inverse mode. This applies only to BlinkStick. Please use L{set_mode} for BlinkStick Pro
+        """Set inverse mode. This applies only to BlinkStick. Please use :meth:`set_mode` for BlinkStick Pro
         to permanently set the inverse mode to the backend.
 
-        @type  value: bool
-        @param value: True/False to set the inverse mode
+        :param value: True/False to set the inverse mode
+        :type value: bool
         """
         if type(value) is str:
             value = value.lower() == "true"  # type: ignore
         self.inverse = bool(value)
 
     def set_max_rgb_value(self, value: int) -> None:
-        """
-        Set RGB color limit. {set_color} function will automatically remap
+        """Set RGB color limit. {set_color} function will automatically remap
         the values to maximum supplied.
 
-        @type  value: int
-        @param value: 0..255 maximum value for each R, G and B color
+        :param value: 0..255 maximum value for each R, G and B color
+        :type value: int
         """
         # convert to int and clamp to 0..255
         value = max(0, min(255, int(value)))
         self.max_rgb_value = value
 
     def get_max_rgb_value(self) -> int:
-        """
-        Get RGB color limit. {set_color} function will automatically remap
+        """Get RGB color limit. :meth:`set_color` function will automatically remap
         the values to maximum set.
 
-        @rtype: int
-        @return: 0..255 maximum value for each R, G and B color
+        :returns: 0..255 maximum value for each R, G and B color
+        :rtype: int
         """
         return self.max_rgb_value
 
 
 class BlinkStickPro:
-    """
-    BlinkStickPro class is specifically designed to control the individually
+    """BlinkStickPro class is specifically designed to control the individually
     addressable LEDs connected to the backend. The tutorials section contains
     all the details on how to connect them to BlinkStick Pro.
 
-    U{http://www.blinkstick.com/help/tutorials}
+    http://www.blinkstick.com/help/tutorials
 
     Code example on how you can use this class are available here:
 
-    U{https://github.com/arvydas/blinkstick-python/wiki#code-examples-for-blinkstick-pro}
+    https://github.com/arvydas/blinkstick-python/wiki#code-examples-for-blinkstick-pro
     """
 
     r_led_count: int
@@ -772,19 +777,18 @@ class BlinkStickPro:
         delay: float = 0.002,
         max_rgb_value: int = 255,
     ):
-        """
-        Initialize BlinkStickPro class.
+        """Initialize BlinkStickPro class.
 
-        @type r_led_count: int
-        @param r_led_count: number of LEDs on R channel
-        @type g_led_count: int
-        @param g_led_count: number of LEDs on G channel
-        @type b_led_count: int
-        @param b_led_count: number of LEDs on B channel
-        @type delay: int
-        @param delay: default transmission delay between frames
-        @type max_rgb_value: int
-        @param max_rgb_value: maximum color value for RGB channels
+        :param r_led_count: number of LEDs on R channel
+        :type r_led_count: int
+        :param g_led_count: number of LEDs on G channel
+        :type g_led_count: int
+        :param b_led_count: number of LEDs on B channel
+        :type b_led_count: int
+        :param delay: default transmission delay between frames
+        :type delay: int
+        :param max_rgb_value: maximum color value for RGB channels
+        :type max_rgb_value: int
         """
 
         self.r_led_count = r_led_count
@@ -822,21 +826,21 @@ class BlinkStickPro:
         b: int,
         remap_values: bool = True,
     ) -> None:
-        """
-        Set the color of a single pixel
+        """Set the color of a single pixel
 
-        @type channel: int
-        @param channel: R, G or B channel
-        @type index: int
-        @param index: the index of LED on the channel
-        @type r: int
-        @param r: red color byte
-        @type g: int
-        @param g: green color byte
-        @type b: int
-        @param b: blue color byte
-        @type remap_values: bool
-        @param remap_values: remap the values to maximum set in L{set_max_rgb_value}
+        :param channel: R, G or B channel
+        :type channel: int
+        :param index: the index of LED on the channel
+        :type index: int
+        :param r: red color byte
+        :type r: int
+        :param g: green color byte
+        :type g: int
+        :param b: blue color byte
+        :type b: int
+        :param remap_values: remap the values to maximum set in
+            :meth:`set_max_rgb_value`
+        :type remap_values: bool
         """
 
         if remap_values:
@@ -845,25 +849,22 @@ class BlinkStickPro:
         self.data[channel][index] = [g, r, b]
 
     def get_color(self, channel: int, index: int) -> tuple[int, int, int]:
-        """
-        Get the current color of a single pixel.
+        """Get the current color of a single pixel.
 
-        @type  channel: int
-        @param channel: the channel of the LED
-        @type  index: int
-        @param index: the index of the LED
+        :param channel: the channel of the LED
+        :type channel: int
+        :param index: the index of the LED
+        :type index: int
 
-        @rtype: (int, int, int)
-        @return: 3-tuple for R, G and B values
+        :returns: 3-tuple for R, G and B values
+        :rtype: (int, int, int)
         """
 
         val = self.data[channel][index]
         return val[1], val[0], val[2]
 
     def clear(self) -> None:
-        """
-        Set all pixels to black in the frame buffer.
-        """
+        """Set all pixels to black in the frame buffer."""
         for x in range(0, self.r_led_count):
             self.set_color(0, x, 0, 0, 0)
 
@@ -874,18 +875,15 @@ class BlinkStickPro:
             self.set_color(2, x, 0, 0, 0)
 
     def off(self) -> None:
-        """
-        Set all pixels to black in on the backend.
-        """
+        """Set all pixels to black on the device."""
         self.clear()
         self.send_data_all()
 
     def connect(self, serial: str | None = None):
-        """
-        Connect to the first BlinkStick found
+        """Connect to the first BlinkStick found
 
-        @type serial: str
-        @param serial: Select the serial number of BlinkStick
+        :param serial: Select the serial number of BlinkStick
+        :type serial: str
         """
 
         if serial is None:
@@ -896,13 +894,14 @@ class BlinkStickPro:
         return self.bstick is not None
 
     def send_data(self, channel: int) -> None:
-        """
-        Send data stored in the internal buffer to the channel.
+        """Send data stored in the internal buffer to the channel.
 
-        @param channel:
-            - 0 - R pin on BlinkStick Pro board
-            - 1 - G pin on BlinkStick Pro board
-            - 2 - B pin on BlinkStick Pro board
+        :param channel: Channel to send data to
+           - 0 - R pin on BlinkStick Pro board
+           - 1 - G pin on BlinkStick Pro board
+           - 2 - B pin on BlinkStick Pro board
+
+        :type channel: int
         """
         if self.bstick is None:
             return
@@ -916,9 +915,7 @@ class BlinkStickPro:
             print("Exception: {0}".format(e))
 
     def send_data_all(self) -> None:
-        """
-        Send data to all channels
-        """
+        """Send data to all channels"""
         if self.r_led_count > 0:
             self.send_data(0)
 
@@ -930,31 +927,36 @@ class BlinkStickPro:
 
 
 class BlinkStickProMatrix(BlinkStickPro):
-    """
-    BlinkStickProMatrix class is specifically designed to control the individually
+    """BlinkStickProMatrix class is specifically designed to control the individually
     addressable LEDs connected to the backend and arranged in a matrix. The tutorials section contains
     all the details on how to connect them to BlinkStick Pro with matrices.
 
-    U{http://www.blinkstick.com/help/tutorials/blinkstick-pro-adafruit-neopixel-matrices}
+    http://www.blinkstick.com/help/tutorials/blinkstick-pro-adafruit-neopixel-matrices
 
     Code example on how you can use this class are available here:
 
-    U{https://github.com/arvydas/blinkstick-python/wiki#code-examples-for-blinkstick-pro}
+    https://github.com/arvydas/blinkstick-python/wiki#code-examples-for-blinkstick-pro
 
-    Matrix is driven by using L{BlinkStickProMatrix.set_color} with [x,y] coordinates and class automatically
+    Matrix is driven by using :meth:`BlinkStickProMatrix.set_color` with [x,y] coordinates and class automatically
     divides data into subsets and sends it to the matrices.
 
     For example, if you have 2 8x8 matrices connected to BlinkStickPro and you initialize
     the class with
 
+    .. code-block:: python
+
         >>> matrix = BlinkStickProMatrix(r_columns=8, r_rows=8, g_columns=8, g_rows=8)
 
-    Then you can set the internal framebuffer by using {set_color} command:
+    Then you can set the internal framebuffer by using :meth:`set_color` command:
+
+    .. code-block:: python
 
         >>> matrix.set_color(x=10, y=5, r=255, g=0, b=0)
         >>> matrix.set_color(x=6, y=3, r=0, g=255, b=0)
 
     And send data to both matrices in one go:
+
+    .. code-block:: python
 
         >>> matrix.send_data_all()
 
@@ -981,19 +983,18 @@ class BlinkStickProMatrix(BlinkStickPro):
         delay: float = 0.002,
         max_rgb_value: int = 255,
     ):
-        """
-        Initialize BlinkStickProMatrix class.
+        """Initialize BlinkStickProMatrix class.
 
-        @type r_columns: int
-        @param r_columns: number of matric columns for R channel
-        @type g_columns: int
-        @param g_columns: number of matric columns for R channel
-        @type b_columns: int
-        @param b_columns: number of matric columns for R channel
-        @type delay: int
-        @param delay: default transmission delay between frames
-        @type max_rgb_value: int
-        @param max_rgb_value: maximum color value for RGB channels
+        :param r_columns: number of matric columns for R channel
+        :type r_columns: int
+        :param g_columns: number of matric columns for R channel
+        :type g_columns: int
+        :param b_columns: number of matric columns for R channel
+        :type b_columns: int
+        :param delay: default transmission delay between frames
+        :type delay: int
+        :param max_rgb_value: maximum color value for RGB channels
+        :type max_rgb_value: int
         """
         r_leds = r_columns * r_rows
         g_leds = g_columns * g_rows
@@ -1026,21 +1027,21 @@ class BlinkStickProMatrix(BlinkStickPro):
     def set_color(
         self, x: int, y: int, r: int, g: int, b: int, remap_values: bool = True
     ) -> None:
-        """
-        Set the color of a single pixel in the internal framebuffer.
+        """Set the color of a single pixel in the internal framebuffer.
 
-        @type x: int
-        @param x: the x location in the matrix
-        @type y: int
-        @param y: the y location in the matrix
-        @type r: int
-        @param r: red color byte
-        @type g: int
-        @param g: green color byte
-        @type b: int
-        @param b: blue color byte
-        @type remap_values: bool
-        @param remap_values: Automatically remap values based on the {max_rgb_value} supplied in the constructor
+        :param x: the x location in the matrix
+        :type x: int
+        :param y: the y location in the matrix
+        :type y: int
+        :param r: red color byte
+        :type r: int
+        :param g: green color byte
+        :type g: int
+        :param b: blue color byte
+        :type b: int
+        :param remap_values: Automatically remap values based on the
+            {max_rgb_value} supplied in the constructor
+        :type remap_values: bool
         """
 
         if remap_values:
@@ -1052,27 +1053,26 @@ class BlinkStickProMatrix(BlinkStickPro):
         return y * self.cols + x
 
     def get_color(self, x: int, y: int) -> tuple[int, int, int]:
-        """
-        Get the current color of a single pixel.
+        """Get the current color of a single pixel.
 
-        @type  x: int
-        @param x: x coordinate of the internal framebuffer
-        @type  y: int
-        @param y: y coordinate of the internal framebuffer
+        :param x: x coordinate of the internal framebuffer
+        :type x: int
+        :param y: y coordinate of the internal framebuffer
+        :type y: int
 
-        @rtype: (int, int, int)
-        @return: 3-tuple for R, G and B values
+        :returns: 3-tuple for R, G and B values
+        :rtype: (int, int, int)
         """
 
         val = self.matrix_data[self._coord_to_index(x, y)]
         return val[1], val[0], val[2]
 
     def shift_left(self, remove: bool = False) -> None:
-        """
-        Shift all LED values in the matrix to the left
+        """Shift all LED values in the matrix to the left
 
-        @type remove: bool
-        @param remove: whether to remove the pixels on the last column or move the to the first column
+        :param remove: whether to remove the pixels on the last column
+            or move the to the first column
+        :type remove: bool
         """
         if not remove:
             temp = []
@@ -1094,11 +1094,11 @@ class BlinkStickProMatrix(BlinkStickPro):
                 self.set_color(self.cols - 1, y, col[0], col[1], col[2], False)
 
     def shift_right(self, remove: bool = False) -> None:
-        """
-        Shift all LED values in the matrix to the right
+        """Shift all LED values in the matrix to the right
 
-        @type remove: bool
-        @param remove: whether to remove the pixels on the last column or move the to the first column
+        :param remove: whether to remove the pixels on the last column
+            or move the to the first column
+        :type remove: bool
         """
 
         if not remove:
@@ -1121,11 +1121,11 @@ class BlinkStickProMatrix(BlinkStickPro):
                 self.set_color(0, y, col[0], col[1], col[2], False)
 
     def shift_down(self, remove: bool = False) -> None:
-        """
-        Shift all LED values in the matrix down
+        """Shift all LED values in the matrix down
 
-        @type remove: bool
-        @param remove: whether to remove the pixels on the last column or move the to the first column
+        :param remove: whether to remove the pixels on the last column
+            or move the to the first column
+        :type remove: bool
         """
 
         if not remove:
@@ -1148,11 +1148,11 @@ class BlinkStickProMatrix(BlinkStickPro):
                 self.set_color(x, 0, col[0], col[1], col[2], False)
 
     def shift_up(self, remove: bool = False):
-        """
-        Shift all LED values in the matrix up
+        """Shift all LED values in the matrix up
 
-        @type remove: bool
-        @param remove: whether to remove the pixels on the last column or move the to the first column
+        :param remove: whether to remove the pixels on the last column
+            or move the to the first column
+        :type remove: bool
         """
 
         if not remove:
@@ -1175,21 +1175,20 @@ class BlinkStickProMatrix(BlinkStickPro):
                 self.set_color(x, self.rows - 1, col[0], col[1], col[2], False)
 
     def number(self, x: int, y: int, n: int, r: int, g: int, b: int) -> None:
-        """
-        Render a 3x5 number n at location x,y and r,g,b color
+        """Render a 3x5 number n at location x,y and r,g,b color
 
-        @type x: int
-        @param x: the x location in the matrix (left of the number)
-        @type y: int
-        @param y: the y location in the matrix (top of the number)
-        @type n: int
-        @param n: number digit to render 0..9
-        @type r: int
-        @param r: red color byte
-        @type g: int
-        @param g: green color byte
-        @type b: int
-        @param b: blue color byte
+        :param x: the x location in the matrix (left of the number)
+        :type x: int
+        :param y: the y location in the matrix (top of the number)
+        :type y: int
+        :param n: number digit to render 0..9
+        :type n: int
+        :param r: red color byte
+        :type r: int
+        :param g: green color byte
+        :type g: int
+        :param b: blue color byte
+        :type b: int
         """
         if n == 0:
             self.rectangle(x, y, x + 2, y + 4, r, g, b)
@@ -1249,23 +1248,26 @@ class BlinkStickProMatrix(BlinkStickPro):
     def rectangle(
         self, x1: int, y1: int, x2: int, y2: int, r: int, g: int, b: int
     ) -> None:
-        """
-        Draw a rectangle with it's corners at x1:y1 and x2:y2
+        """Draw a rectangle with its corners at x1:y1 and x2:y2
 
-        @type x1: int
-        @param x1: the x1 location in the matrix for first corner of the rectangle
-        @type y1: int
-        @param y1: the y1 location in the matrix for first corner of the rectangle
-        @type x2: int
-        @param x2: the x2 location in the matrix for second corner of the rectangle
-        @type y2: int
-        @param y2: the y2 location in the matrix for second corner of the rectangle
-        @type r: int
-        @param r: red color byte
-        @type g: int
-        @param g: green color byte
-        @type b: int
-        @param b: blue color byte
+        :param x1: the x1 location in the matrix for first corner of the
+            rectangle
+        :type x1: int
+        :param y1: the y1 location in the matrix for first corner of the
+            rectangle
+        :type y1: int
+        :param x2: the x2 location in the matrix for second corner of
+            the rectangle
+        :type x2: int
+        :param y2: the y2 location in the matrix for second corner of
+            the rectangle
+        :type y2: int
+        :param r: red color byte
+        :type r: int
+        :param g: green color byte
+        :type g: int
+        :param b: blue color byte
+        :type b: int
         """
 
         self.line(x1, y1, x1, y2, r, g, b)
@@ -1276,23 +1278,26 @@ class BlinkStickProMatrix(BlinkStickPro):
     def line(
         self, x1: int, y1: int, x2: int, y2: int, r: int, g: int, b: int
     ) -> list[tuple[int, int]]:
-        """
-        Draw a line from x1:y1 and x2:y2
+        """Draw a line from x1:y1 and x2:y2
 
-        @type x1: int
-        @param x1: the x1 location in the matrix for the start of the line
-        @type y1: int
-        @param y1: the y1 location in the matrix for the start of the line
-        @type x2: int
-        @param x2: the x2 location in the matrix for the end of the line
-        @type y2: int
-        @param y2: the y2 location in the matrix for the end of the line
-        @type r: int
-        @param r: red color byte
-        @type g: int
-        @param g: green color byte
-        @type b: int
-        @param b: blue color byte
+        :param x1: the x1 location in the matrix for the start of the
+            line
+        :type x1: int
+        :param y1: the y1 location in the matrix for the start of the
+            line
+        :type y1: int
+        :param x2: the x2 location in the matrix for the end of the line
+        :type x2: int
+        :param y2: the y2 location in the matrix for the end of the line
+        :type y2: int
+        :param r: red color byte
+        :type r: int
+        :param g: green color byte
+        :type g: int
+        :param b: blue color byte
+        :type b: int
+        :returns: list of points that were drawn
+        :rtype: list[tuple[int, int]]
         """
         points = []
         is_steep = abs(y2 - y1) > abs(x2 - x1)
@@ -1333,21 +1338,20 @@ class BlinkStickProMatrix(BlinkStickPro):
         return points
 
     def clear(self) -> None:
-        """
-        Set all pixels to black in the cached matrix
-        """
+        """Set all pixels to black in the cached matrix"""
         for y in range(0, self.rows):
             for x in range(0, self.cols):
                 self.set_color(x, y, 0, 0, 0)
 
     def send_data(self, channel: int) -> None:
-        """
-        Send data stored in the internal buffer to the channel.
+        """Send data stored in the internal buffer to the channel.
 
-        @param channel:
-            - 0 - R pin on BlinkStick Pro board
-            - 1 - G pin on BlinkStick Pro board
-            - 2 - B pin on BlinkStick Pro board
+        :param channel: Channel to send data to
+           - 0 - R pin on BlinkStick Pro board
+           - 1 - G pin on BlinkStick Pro board
+           - 2 - B pin on BlinkStick Pro board
+
+        :type channel: int
         """
 
         start_col = 0
@@ -1396,11 +1400,10 @@ def _find_blicksticks(find_all: bool = True) -> list[BlinkStick] | None:
 
 
 def find_all() -> list[BlinkStick]:
-    """
-    Find all attached BlinkStick devices.
+    """Find all attached BlinkStick devices.
 
-    @rtype: BlinkStick[]
-    @return: a list of BlinkStick objects or None if no devices found
+    :returns: a list of BlinkStick objects or None if no devices found
+    :rtype: BlinkStick[] | None
     """
     result: list[BlinkStick] = []
     if (found_devices := USBBackend.find_blinksticks()) is None:
@@ -1412,11 +1415,10 @@ def find_all() -> list[BlinkStick]:
 
 
 def find_first() -> BlinkStick | None:
-    """
-    Find first attached BlinkStick.
+    """Find first attached BlinkStick.
 
-    @rtype: BlinkStick
-    @return: BlinkStick object or None if no devices are found
+    :returns: BlinkStick object or None if no devices are found
+    :rtype: BlinkStick | None
     """
     d = USBBackend.find_blinksticks(find_all=False)
 
@@ -1427,11 +1429,10 @@ def find_first() -> BlinkStick | None:
 
 
 def find_by_serial(serial: str = "") -> BlinkStick | None:
-    """
-    Find BlinkStick backend based on serial number.
+    """Find BlinkStick backend based on serial number.
 
-    @rtype: BlinkStick
-    @return: BlinkStick object or None if no devices are found
+    :returns: BlinkStick object or None if no devices are found
+    :rtype: BlinkStick | None
     """
 
     devices = USBBackend.find_by_serial(serial=serial)
