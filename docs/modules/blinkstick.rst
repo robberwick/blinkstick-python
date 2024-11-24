@@ -1,0 +1,6 @@
+blinkstick
+==========
+
+.. automodule:: blinkstick
+
+   
